@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState("");         
+    const [password, setPassword] = useState("");   
 
     const navigate = useNavigate();
 
@@ -30,6 +32,7 @@ export default function Login() {
 
 
   return (
+    <div>
       <form onSubmit={handleLogin} className="flex flex-col gap-4 max-w-sm mx-auto mt-10">
     {error && <p className="text-red-500">{error}</p>}
     {loading && <p className="text-gray-500">Cargando...</p>}
@@ -51,6 +54,10 @@ export default function Login() {
       <button type="submit" className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
         Iniciar sesión
       </button>
-    </form>
+    </form>   
+    <button onClick={() => navigate('/register')} className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+    Registrate
+  </button>   
+  </div>  
   );
 }

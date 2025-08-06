@@ -40,7 +40,10 @@ export default function Register() {
         createdAt: new Date(),
       });
 
-      console.log("Usuario registrado:", uid);
+      await setDoc(doc(db, "roles", uid), { 
+        role: "user" 
+      });
+
       navigate("/dashboard");
     } catch (err) {
       setError("Error al registrar: " + err.message);
