@@ -4,7 +4,7 @@ import { db } from "../firebase"; // tu instancia de Firestore
 
 export async function fetchUserRole(uid) {
   try {
-    const userRef = doc(db, "users", uid);
+    const userRef = doc(db, "roles", uid);
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {

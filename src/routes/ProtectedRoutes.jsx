@@ -1,13 +1,15 @@
-// src/routes/ProtectedRoute.jsx
+// src/routes/ProtectedRoutes.jsx
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 
-export default function ProtectedRoutes({ children, allowedRoles }) {
-  const user = useAuthStore((state) => state.user);
-  const role = useAuthStore((state) => state.role);
+export default function ProtectedRoutes({ allowedRoles, children }) {
+  const { user, role, isAuthReady } = useAuthStore();
 
-  if (!user) return <Navigate to="/login" />;
-  if (allowedRoles && !allowedRoles.includes(role)) return <Navigate to="/" />;
+  if (!isAuthReady) return <p className="text-center mt-10">Cargando sesión...</p>;
+
+  if (!user || !allowedRoles.includes(role)) {
+    return <Navigate to="/login" />;
+  }
 
   return children;
 }

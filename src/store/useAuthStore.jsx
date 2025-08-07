@@ -7,11 +7,12 @@ export const useAuthStore = create(
     (set) => ({
       user: null,
       role: null,
-      setUser: (user, role) => set({ user, role }),
-      clearUser: () => set({ user: null, role: null }),
+      isAuthReady: false,
+      setUser: (user, role) => set({ user, role, isAuthReady: true }),
+      clearUser: () => set({ user: null, role: null, isAuthReady: false }),
     }),
     {
-      name: "auth-storage", // clave en localStorage
+      name: "auth-storage",
     }
   )
 );

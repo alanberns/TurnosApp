@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { auth, db } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import LogoutButton from "./LogoutButton";
 
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
@@ -47,14 +48,8 @@ export default function Dashboard() {
 
       <h2 className="text-xl font-semibold text-indigo-500">Tus turnos</h2>
       <p className="text-gray-500">(Acá vamos a listar los turnos del usuario)</p>
-      import {logout} from "../utils/logout";
 
-      <button
-        onClick={logout}
-        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-      >
-        Cerrar sesión
-      </button>
+      <LogoutButton />
 
     </div>
   );
