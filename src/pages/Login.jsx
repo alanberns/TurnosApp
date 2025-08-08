@@ -1,10 +1,12 @@
 // src/Login.jsx
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "./store/useAuthStore";
-import { fetchUserRole } from "./utils/fetchUserRole";
+import { useAuthStore } from "../store/useAuthStore";
+import { fetchUserRole } from "../utils/fetchUserRole";
+import { fetchUserTurnos } from "../utils/fetchUserTurnos";
+import { fetchUserInfo } from "../utils/fetchUserInfo";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -22,7 +24,9 @@ export default function Login() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const role = await fetchUserRole(userCredential.user.uid);
-      setUser(userCredential.user, role);
+      const info = await fetchUserInfo(userCredential.user.uid);
+      const turnos = await fetchUserTurnos(userCredential.user.uid);
+      setUser(userCredential.user, role, info, turnos);
       navigate("/dashboard");
     } catch (err) {
       setError("Credenciales inválidas.");

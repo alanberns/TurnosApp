@@ -1,7 +1,7 @@
 // src/components/LogoutButton.jsx
 import { signOut } from "firebase/auth";
-import { auth } from "./firebase";
-import { useAuthStore } from "./store/useAuthStore";
+import { auth } from "../firebase";
+import { useAuthStore } from "../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 
 export default function LogoutButton() {

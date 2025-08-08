@@ -1,6 +1,5 @@
-// src/utils/fetchUserRole.js
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase"; // tu instancia de Firestore
+import { db } from "../firebase"; 
 
 export async function fetchUserRole(uid) {
   try {

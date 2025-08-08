@@ -1,4 +1,3 @@
-// src/store/useAuthStore.js
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -7,9 +6,12 @@ export const useAuthStore = create(
     (set) => ({
       user: null,
       role: null,
+      info: null,
+      turnos: null,
       isAuthReady: false,
-      setUser: (user, role) => set({ user, role, isAuthReady: true }),
-      clearUser: () => set({ user: null, role: null, isAuthReady: false }),
+      setUser: ({ user, role, info, turnos }) =>
+        set({ user, role, info, turnos, isAuthReady: true }),      
+      clearUser: () => set({ user: null, role: null, info: null, turnos: null, isAuthReady: false }),
     }),
     {
       name: "auth-storage",
