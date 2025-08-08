@@ -2,8 +2,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthProvider from "./AuthProvider";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import AdminPage from "./pages/AdminPage";
+import Dashboard from "./pages/user/Dashboard";
+import AdminPage from "./pages/admin/AdminPage";
+import AdminConfig from "./pages/admin/AdminCofig";
+import AdminTiposTurno from "./pages/admin/AdminTiposTurno";
 import Home from "./pages/Home";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import Layout from "./components/layout/Layout";
@@ -34,6 +36,18 @@ export default function App() {
                 </ProtectedRoutes>
               }
             />
+            <Route
+            path="/admin/turnos"
+            element={
+                <AdminTiposTurno />
+            }
+          />
+          <Route
+            path="/admin/horarios"
+            element={
+                <AdminConfig />
+            }
+          />
           </Routes>
         </Layout>
       </BrowserRouter>
