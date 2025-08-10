@@ -23,10 +23,9 @@ export default function Login() {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const role = await fetchUserRole(userCredential.user.uid);
       const info = await fetchUserInfo(userCredential.user.uid);
       const turnos = await fetchUserTurnos(userCredential.user.uid);
-      setUser(userCredential.user, role, info, turnos);
+      setUser(userCredential.user, info, turnos);
       navigate("/dashboard");
     } catch (err) {
       setError("Credenciales inválidas.");
