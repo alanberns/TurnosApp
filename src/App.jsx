@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/user/Dashboard";
 import AdminPage from "./pages/admin/AdminPage";
 import AdminConfig from "./pages/admin/AdminCofig";
-import AdminTiposTurno from "./pages/admin/AdminTiposTurno";
+import AdminCalendarPage from "./pages/admin/AdminCalendarPage";
 import Home from "./pages/Home";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import Layout from "./components/layout/Layout";
@@ -37,17 +37,17 @@ export default function App() {
               }
             />
             <Route
-            path="/admin/turnos"
-            element={
-                <AdminTiposTurno />
-            }
-          />
-          <Route
-            path="/admin/horarios"
-            element={
+              path="/admin/turnos"
+              element={
+                <AdminCalendarPage />
+              }
+            />
+            <Route
+              path="/admin/horarios"
+              element={
                 <AdminConfig />
-            }
-          />
+              }
+            />
           </Routes>
         </Layout>
       </BrowserRouter>
