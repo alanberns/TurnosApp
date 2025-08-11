@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InfoMessage from "../../components/InfoMessage";
 import { useAuthStore } from "../../store/useAuthStore";
+import { Link } from "react-router-dom";
 
 
 export default function Dashboard() {
@@ -37,12 +38,12 @@ export default function Dashboard() {
 
 
       <button onClick={() => setSuccess("hola")}>Click</button>
-      <button
-        onClick={() => setSuccess("hola")}
+      <Link
+        to={"/turnos"}
         className="mt-6 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
       >
         Sacar nuevo turno
-      </button>
+      </Link>
 
 
     </div>

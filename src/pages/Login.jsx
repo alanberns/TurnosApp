@@ -4,9 +4,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
-import { fetchUserRole } from "../utils/fetchUserRole";
-import { fetchUserTurnos } from "../utils/fetchUserTurnos";
-import { fetchUserInfo } from "../utils/fetchUserInfo";
+import { fetchUserTurnos } from "../db/user/fetchUserTurnos";
+import { fetchUserInfo } from "../db/user/fetchUserInfo";
 
 export default function Login() {
   const [email, setEmail] = useState("");

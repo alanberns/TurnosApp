@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { useAuthStore } from "./store/useAuthStore";
-import { fetchUserInfo } from "./utils/fetchUserInfo";
-import { fetchUserTurnos } from "./utils/fetchUserTurnos";
+import { fetchUserInfo } from "./db/user/fetchUserInfo";
+import { fetchUserTurnos } from "./db/user/fetchUserTurnos";
 
 export default function AuthProvider({ children }) {
   const setUser = useAuthStore((state) => state.setUser);

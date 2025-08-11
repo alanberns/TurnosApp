@@ -3,12 +3,14 @@ import AuthProvider from "./AuthProvider";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/user/Dashboard";
+import SacarTurno from "./pages/user/SacarTurno";
 import AdminPage from "./pages/admin/AdminPage";
 import AdminConfig from "./pages/admin/AdminCofig";
 import AdminCalendarPage from "./pages/admin/AdminCalendarPage";
 import Home from "./pages/Home";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import Layout from "./components/layout/Layout";
+import AdminServicios from "./pages/admin/AdminServicios";
 
 
 export default function App() {
@@ -29,6 +31,12 @@ export default function App() {
               }
             />
             <Route
+              path="/turnos"
+              element={
+                <SacarTurno />
+              }
+            />
+            <Route
               path="/admin"
               element={
                 <ProtectedRoutes allowedRoles={["admin"]}>
@@ -46,6 +54,12 @@ export default function App() {
               path="/admin/horarios"
               element={
                 <AdminConfig />
+              }
+            />
+            <Route
+              path="/admin/servicios"
+              element={
+                <AdminServicios />
               }
             />
           </Routes>

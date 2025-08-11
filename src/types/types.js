@@ -11,9 +11,21 @@
  */
 
 /**
+ * @typedef {Object} Excepcion
+ * @property {Date} fecha 
+ * @property {string} inicio - hora en formato "HH:mm" (ej. "09:00") Opcional
+ * @property {string} fin - hora en formato "HH:mm" (ej. "18:30") Opcional
+ * @property {'abierto'|'cerrado'} tipoExcepcion 
+ */
+
+/**
  * @typedef {Object} Config
  * @property {number} turnosSimultaneos - cantidad máxima de turnos por slot
  * @property {HorarioDia[]} horarioAtencion - array con el horario por día de la semana
+ * @property {number} MinutosVentana - Minutos de la ventana
+ * @property {boolean} AutoaceptarTurnos 
+ * @property {Excepcion}
+ * 
  */
 
 /**
@@ -38,7 +50,7 @@
 /**
  * @typedef {Object} Slot
  * @property {string} id
- * @property {Date} fechaHoraInicio
+ * @property {Date} fechaHoraInicio 
  * @property {Date} fechaHoraFin
  * @property {boolean} disponible
  * @property {number} capacidad - lugares disponibles para ese slot
@@ -53,6 +65,3 @@
  * @property {'pendiente'|'confirmado'|'cancelado'} estado
  * @property {Date} fechaCreacion
  */
-
-// Ejemplo: podés importar y usar estos typedefs en JSDoc de funciones
-// para documentar qué reciben y qué retornan.
