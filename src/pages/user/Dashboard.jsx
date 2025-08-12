@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import InfoMessage from "../../components/InfoMessage";
 import { useAuthStore } from "../../store/useAuthStore";
 import { Link } from "react-router-dom";
+import { Timestamp } from "firebase/firestore";
 
 
 export default function Dashboard() {
@@ -25,14 +26,26 @@ export default function Dashboard() {
       {turnos.length === 0 ? (
         <p className="text-gray-400 mt-2">No tenés turnos próximos.</p>
       ) : (
-        <ul className="mt-4 space-y-3">
-          {turnos.map((turno) => (
-            <li key={turno.id} className="border p-3 rounded shadow-sm">
-              <p><strong>Tipo:</strong> {turno.tipo}</p>
-              <p><strong>Fecha:</strong> {turno.fecha} {turno.hora}</p>
-              <p><strong>Estado:</strong> {turno.estado}</p>
-            </li>
-          ))}
+          <ul className="mt-4 space-y-3">
+            {turnos.map((turno) => (
+              <li key={turno.id} className="border p-3 rounded shadow-sm">
+                <h3>{turno.servicio?.nombre}</h3>
+                <p><strong>Precio:</strong> ${turno.servicio?.precio}</p>
+                <p><strong>Fecha:</strong> {new Timestamp(
+                  turno.inicio.seconds,
+                  turno.inicio.nanoseconds
+                ).toDate().toLocaleString("es-AR", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit"
+                })}</p>
+                <p><strong>Duración:</strong> {turno.servicio?.duracionMinutos} minutos</p>
+                <p><strong>Estado:</strong> {turno.estado}</p>
+              </li>
+            ))}
         </ul>
       )}
 
