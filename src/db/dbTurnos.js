@@ -168,60 +168,70 @@ export async function reservarTurnoYSlots({
   userUid,
   servicioUid
 }) {
-  // obtener de la bd: minutosSlot, turnosSimultaneos,
   const configSnap = await getDoc(doc(db, "configuracion", "admin"));
 
-  const necesarios = Math.max(1, Math.ceil(duracionMinutos / configSnap.minutosSlot));
+  const minutosSlot = configSnap.data().minutosSlot;
+  const turnosSimultaneos = configSnap.data().turnosSimultaneos;
 
-  // Preparamos los Date e IDs de cada sub-slot
+  const necesarios = Math.max(1, Math.ceil(duracionMinutos / minutosSlot));
+
   const inicios = Array.from({ length: necesarios }, (_, i) =>
-    new Date(slotInicio.getTime() + i * configSnap.minutosSlot * 60000)
+    new Date(slotInicio.getTime() + i * minutosSlot * 60000)
   );
   const slotIds = inicios.map(slotIdFromDate);
   const slotRefs = slotIds.map((id) => doc(db, "slots", id));
 
   const finTurno = new Date(slotInicio.getTime() + duracionMinutos * 60000);
-
   const turnoId = crypto.randomUUID();
   const turnoRef = doc(db, "turnos", turnoId);
 
   await runTransaction(db, async (tx) => {
-    // Crear/validar y decrementar todos los slots
+    const slotData = [];
+  
+    // 1. Leer todos los slots primero
     for (let i = 0; i < slotRefs.length; i++) {
       const ref = slotRefs[i];
       const inicio = inicios[i];
-
       const snap = await tx.get(ref);
-
+  
+      slotData.push({ ref, inicio, snap });
+    }
+  
+    // 2. Validar y preparar escrituras
+    for (let i = 0; i < slotData.length; i++) {
+      const { ref, inicio, snap } = slotData[i];
+      let capActual;
+  
       if (!snap.exists()) {
-        // Crear con capacidad inicial y luego decrementamos
+        capActual = turnosSimultaneos;
+  
         tx.set(ref, {
           fechaHoraInicio: Timestamp.fromDate(inicio),
           fechaHoraFin: Timestamp.fromDate(
-            new Date(inicio.getTime() + configSnap.minutosSlot * 60000)
+            new Date(inicio.getTime() + minutosSlot * 60000)
           ),
-          capacidad: configSnap.turnosSimultaneos,
+          capacidad: capActual - 1,
           creadoEn: serverTimestamp(),
           actualizadoEn: serverTimestamp()
         });
+      } else {
+        const data = snap.data();
+        capActual = typeof data.capacidad === "number"
+          ? data.capacidad
+          : turnosSimultaneos;
+  
+        if (capActual <= 0) {
+          throw new Error("Sin disponibilidad en uno de los tramos.");
+        }
+  
+        tx.update(ref, {
+          capacidad: capActual - 1,
+          actualizadoEn: serverTimestamp()
+        });
       }
-
-      const snap2 = await tx.get(ref);
-      const capActual =
-        typeof snap2.data().capacidad === "number"
-          ? snap2.data().capacidad
-          : configSnap.turnosSimultaneos;
-
-      if (capActual <= 0) {
-        throw new Error("Sin disponibilidad en uno de los tramos.");
-      }
-
-      tx.update(ref, {
-        capacidad: capActual - 1,
-        actualizadoEn: serverTimestamp()
-      });
     }
-    // Crear el turno solo si todos los slots pudieron decrementarse
+  
+    // 3. Crear el turno
     tx.set(turnoRef, {
       userId: userUid,
       servicioId: servicioUid,
@@ -230,10 +240,9 @@ export async function reservarTurnoYSlots({
       duracionMinutos,
       slotIds,
       estado: "confirmado",
-      creadoEn: serverTimestamp()
+      fechaCreacion: serverTimestamp()
     });
   });
 
   return { turnoId, slotIds };
 }
-
