@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { fetchServicios } from "../db/fetchServicios";
+import { fetchServicios } from "../db/service/fetchServicios";
 
 export default function Home() {
   const user = useAuthStore((state) => state.user);

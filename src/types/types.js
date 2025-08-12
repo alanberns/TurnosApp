@@ -52,7 +52,6 @@
  * @property {string} id
  * @property {Date} fechaHoraInicio 
  * @property {Date} fechaHoraFin
- * @property {boolean} disponible
  * @property {number} capacidad - lugares disponibles para ese slot
  */
 
@@ -61,7 +60,7 @@
  * @property {string} id
  * @property {string} userId
  * @property {string} servicioId
- * @property {string} slotId
+ * @property {string} slotId -Deberia ser array
  * @property {'pendiente'|'confirmado'|'cancelado'} estado
  * @property {Date} fechaCreacion
  */

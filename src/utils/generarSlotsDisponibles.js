@@ -1,4 +1,11 @@
-export function generarSlots(fecha, duracionMinutos, config, horasLlenas = []) {
+/**
+ * @param {Date} fecha
+ * @param {number} duracionMinutos
+ * @param {Config} config
+ * @param {Slot[]} slotsDia
+ * @returns {Slot[]}
+ */
+export function generarSlotsDisponibles(fecha, duracionMinutos, config, slotsDia) {
   if (!config?.horarioAtencion) return [];
 
   const diaSemana = fecha.getDay();
@@ -10,9 +17,8 @@ export function generarSlots(fecha, duracionMinutos, config, horasLlenas = []) {
 
   const inicioMin = hInicio * 60 + mInicio;
   const finMin = hFin * 60 + mFin;
-
-  const slots = [];
   let idCounter = 1;
+  const out = [];
 
   for (let t = inicioMin; t + duracionMinutos <= finMin; t += duracionMinutos) {
     const hh = String(Math.floor(t / 60)).padStart(2, "0");
@@ -22,10 +28,13 @@ export function generarSlots(fecha, duracionMinutos, config, horasLlenas = []) {
     fechaInicio.setHours(hh, mm, 0, 0);
     const fechaFin = new Date(fechaInicio.getTime() + duracionMinutos * 60000);
 
-    const horaStr = `${hh}:${mm}`;
-    const disponible = !horasLlenas.includes(horaStr);
+    const slotDb = slotsDia.find(
+      s => s.fechaHoraInicio.getTime() === fechaInicio.getTime()
+    );
 
-    slots.push({
+    const disponible = slotDb ? slotDb.disponibles > 0 : true;
+
+    out.push({
       id: `slot-${idCounter++}`,
       fechaHoraInicio: fechaInicio,
       fechaHoraFin: fechaFin,
@@ -33,6 +42,5 @@ export function generarSlots(fecha, duracionMinutos, config, horasLlenas = []) {
       capacidad: config.turnosSimultaneos
     });
   }
-
-  return slots;
+  return out;
 }

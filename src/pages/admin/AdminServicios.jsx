@@ -1,40 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { db } from '../../firebase';
+import React, { useState, useEffect } from "react";
 import {
-  collection,
-  addDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  doc
-} from 'firebase/firestore';
+  getServicios,
+  addServicio,
+  updateServicio,
+  deleteServicio
+} from "../../db/service/dbServicios";
 
 export default function AdminServicios() {
   const [servicios, setServicios] = useState([]);
   const [form, setForm] = useState({
-    nombre: '',
+    nombre: "",
     duracionMinutos: 30,
     precio: 0,
     activo: true
   });
   const [editId, setEditId] = useState(null);
 
-  const colRef = collection(db, 'servicios');
-
-  // Cargar lista al inicio
   useEffect(() => {
-    const cargarServicios = async () => {
-      const snap = await getDocs(colRef);
-      setServicios(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    };
     cargarServicios();
   }, []);
+
+  async function cargarServicios() {
+    setServicios(await getServicios());
+  }
 
   const handleChange = e => {
     const { name, value, type, checked } = e.target;
     setForm(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value
     }));
   };
 
@@ -43,33 +37,24 @@ export default function AdminServicios() {
     if (!form.nombre) return;
 
     if (editId) {
-      await updateDoc(doc(db, 'servicios', editId), {
-        ...form,
-        duracionMinutos: Number(form.duracionMinutos),
-        precio: Number(form.precio)
-      });
+      await updateServicio(editId, form);
       setEditId(null);
     } else {
-      await addDoc(colRef, {
-        ...form,
-        duracionMinutos: Number(form.duracionMinutos),
-        precio: Number(form.precio)
-      });
+      await addServicio(form);
     }
 
-    setForm({ nombre: '', duracionMinutos: 30, precio: 0, activo: true });
-    const snap = await getDocs(colRef);
-    setServicios(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    setForm({ nombre: "", duracionMinutos: 30, precio: 0, activo: true });
+    cargarServicios();
   };
 
-  const editarServicio = servicio => {
-    setForm(servicio);
-    setEditId(servicio.id);
+  const editarServicio = s => {
+    setForm(s);
+    setEditId(s.id);
   };
 
   const eliminarServicio = async id => {
-    if (!window.confirm('¿Eliminar este servicio?')) return;
-    await deleteDoc(doc(db, 'servicios', id));
+    if (!window.confirm("¿Eliminar este servicio?")) return;
+    await deleteServicio(id);
     setServicios(servicios.filter(s => s.id !== id));
   };
 
