@@ -1,6 +1,7 @@
 import { db } from "../firebase";
-import { doc, setDoc, onSnapshot, collection, addDoc, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, onSnapshot, collection, addDoc, deleteDoc, query, where } from "firebase/firestore";
 import { serializeHorarios, deserializeHorarios } from "../utils/horarios";
+import dayjs from "dayjs";
 
 export function listenConfig(rolId, defaultHorarios, onData, onError) {
   const configRef = doc(db, "configuracion", rolId);
@@ -22,9 +23,16 @@ export function listenConfig(rolId, defaultHorarios, onData, onError) {
 }
 
 export function listenExcepciones(rolId, onData, onError) {
+  // fecha de hoy en formato YYYY-MM-DD
+  const hoy = dayjs().format("YYYY-MM-DD");
+
   const exRef = collection(db, "configuracion", rolId, "excepciones");
+
+  // 🔍 filtramos por fecha >= hoy
+  const qEx = query(exRef, where("fecha", ">=", hoy));
+
   return onSnapshot(
-    exRef,
+    qEx,
     snap => {
       const lista = [];
       snap.forEach(d => lista.push({ id: d.id, ...d.data() }));

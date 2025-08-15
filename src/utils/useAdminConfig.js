@@ -1,5 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
-import { listenConfig, listenExcepciones, saveConfig, addExcepcion, removeExcepcion } from "../db/configService";
+import {
+  listenConfig,
+  listenExcepciones,
+  saveConfig,
+  addExcepcion,
+  removeExcepcion
+} from "../db/configService";
 
 export function useAdminConfig(rolId, isAuthReady) {
   const defaultHorarios = useMemo(
@@ -8,6 +14,7 @@ export function useAdminConfig(rolId, isAuthReady) {
   );
 
   const [turnosSimultaneos, setTurnosSimultaneos] = useState(1);
+  const [minutosSlot, setMinutosSlot] = useState(15); // ⬅ nuevo estado
   const [horarios, setHorarios] = useState(defaultHorarios);
   const [excepciones, setExcepciones] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,12 +28,16 @@ export function useAdminConfig(rolId, isAuthReady) {
       defaultHorarios,
       data => {
         if (data) {
-          setTurnosSimultaneos(data.turnosSimultaneos);
-          setHorarios(data.horarios);
+          setTurnosSimultaneos(data.turnosSimultaneos ?? 1);
+          setMinutosSlot(data.minutosSlot ?? 15); 
+          setHorarios(data.horarios ?? defaultHorarios);
         }
         setLoading(false);
       },
-      err => { setError(err.message); setLoading(false); }
+      err => {
+        setError(err.message);
+        setLoading(false);
+      }
     );
 
     const unsubEx = listenExcepciones(
@@ -35,19 +46,25 @@ export function useAdminConfig(rolId, isAuthReady) {
       err => setError(err.message)
     );
 
-    return () => { unsubConfig(); unsubEx(); };
+    return () => {
+      unsubConfig();
+      unsubEx();
+    };
   }, [rolId, isAuthReady, defaultHorarios]);
 
   return {
     turnosSimultaneos,
     setTurnosSimultaneos,
+    minutosSlot,              
+    setMinutosSlot,
     horarios,
     setHorarios,
     excepciones,
     loading,
     error,
     defaultHorarios,
-    saveConfig: () => saveConfig(rolId, turnosSimultaneos, horarios),
+    saveConfig: () =>
+      saveConfig(rolId, turnosSimultaneos, minutosSlot, horarios), // ⬅ pasamos minutosSlot
     addExcepcion: exc => addExcepcion(rolId, exc),
     removeExcepcion: id => removeExcepcion(rolId, id)
   };

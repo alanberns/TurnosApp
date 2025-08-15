@@ -14,6 +14,7 @@ export default function AdminConfig() {
 
   const {
     turnosSimultaneos, setTurnosSimultaneos,
+    minutosSlot, setMinutosSlot, // ⬅ nuevo hook desde useAdminConfig
     horarios, setHorarios,
     excepciones, loading, error,
     defaultHorarios, saveConfig,
@@ -51,8 +52,23 @@ export default function AdminConfig() {
       <h2 className="text-xl font-bold">Configuración para rol: {rolId}</h2>
       {error && <p className="text-red-500">{error}</p>}
 
+      {/* Turnos simultáneos */}
       <TurnosSimultaneosInput value={turnosSimultaneos} onChange={setTurnosSimultaneos} />
 
+      {/* Minutos por slot */}
+      <div className="mt-4">
+        <label className="block font-medium mb-1">Minutos por bloque</label>
+        <input
+          type="number"
+          min="5"
+          step="5"
+          value={minutosSlot ?? 15}
+          onChange={(e) => setMinutosSlot(Number(e.target.value))}
+          className="border border-gray-300 rounded px-3 py-1 w-28"
+        />
+      </div>
+
+      {/* Horarios semanales */}
       <HorarioSemana
         diasSemana={diasSemana}
         horarios={horarios}
@@ -61,6 +77,7 @@ export default function AdminConfig() {
         onEliminar={eliminarFranja}
       />
 
+      {/* Excepciones */}
       <h3 className="mt-6 font-semibold">Excepciones</h3>
       <ExcepcionesForm
         nuevaExcepcion={nuevaExcepcion}
@@ -73,6 +90,7 @@ export default function AdminConfig() {
       />
       <ExcepcionesLista excepciones={excepciones} onDelete={removeExcepcion} />
 
+      {/* Guardar */}
       <button
         onClick={saveConfig}
         className="mt-6 bg-indigo-600 text-white px-4 py-2 rounded"
@@ -82,4 +100,3 @@ export default function AdminConfig() {
     </div>
   );
 }
-
