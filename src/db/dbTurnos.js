@@ -87,15 +87,24 @@ export function generarSlotsOfrecibles(
 ) {
   const ofrecibles = [];
 
+  const hoy = new Date();
+  const esHoy =
+    fecha.getFullYear() === hoy.getFullYear() &&
+    fecha.getMonth() === hoy.getMonth() &&
+    fecha.getDate() === hoy.getDate();
+
   horarioAtencion.forEach(({ inicio, fin }) => {
-    const inicioBloque = new Date(`${fecha.toISOString().slice(0,10)}T${inicio}`);
-    const finBloque   = new Date(`${fecha.toISOString().slice(0,10)}T${fin}`);
+    const inicioBloque = new Date(`${fecha.toISOString().slice(0, 10)}T${inicio}`);
+    const finBloque = new Date(`${fecha.toISOString().slice(0, 10)}T${fin}`);
 
     for (
       let hora = new Date(inicioBloque);
       hora < finBloque;
       hora.setMinutes(hora.getMinutes() + minutosSlot)
     ) {
+      // ⬅️ filtro extra: si es hoy y el inicio ya pasó, lo salto
+      if (esHoy && hora <= hoy) continue;
+
       const finServicio = new Date(hora.getTime() + duracionMinutos * 60000);
 
       // 1️⃣ Si no entra completo antes del cierre → descartar
@@ -108,8 +117,8 @@ export function generarSlotsOfrecibles(
         t < finServicio;
         t.setMinutes(t.getMinutes() + minutosSlot)
       ) {
-        const slotOcupado = slotsRegistrados.find(s =>
-          s.fechaHoraInicio.getTime() === t.getTime()
+        const slotOcupado = slotsRegistrados.find(
+          (s) => s.fechaHoraInicio.getTime() === t.getTime()
         );
         if (slotOcupado && slotOcupado.capacidad === 0) {
           conflict = true;
@@ -119,8 +128,8 @@ export function generarSlotsOfrecibles(
       if (conflict) continue;
 
       // 3️⃣ Si hay un slot en ese inicio, usar sus datos; si no, generar uno nuevo
-      const slotExistente = slotsRegistrados.find(s =>
-        s.fechaHoraInicio.getTime() === hora.getTime()
+      const slotExistente = slotsRegistrados.find(
+        (s) => s.fechaHoraInicio.getTime() === hora.getTime()
       );
 
       if (!slotExistente || slotExistente.capacidad > 0) {
@@ -129,7 +138,7 @@ export function generarSlotsOfrecibles(
           fechaHoraInicio: new Date(hora),
           fechaHoraFin: finServicio,
           capacidad: slotExistente?.capacidad ?? turnosSimultaneos,
-          disponible: (slotExistente?.capacidad ?? turnosSimultaneos) > 0
+          disponible: (slotExistente?.capacidad ?? turnosSimultaneos) > 0,
         });
       }
     }
