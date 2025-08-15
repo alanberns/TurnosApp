@@ -14,14 +14,19 @@ export default function AdminConfig() {
 
   const {
     turnosSimultaneos, setTurnosSimultaneos,
-    minutosSlot, setMinutosSlot, // ⬅ nuevo hook desde useAdminConfig
+    minutosSlot, setMinutosSlot,
     horarios, setHorarios,
     excepciones, loading, error,
     defaultHorarios, saveConfig,
     addExcepcion, removeExcepcion
   } = useAdminConfig(rolId, isAuthReady);
 
-  const [nuevaExcepcion, setNuevaExcepcion] = useState({ fecha: "", tipo: "cerrado", inicio: "", fin: "" });
+  const [nuevaExcepcion, setNuevaExcepcion] = useState({
+    fecha: "",
+    tipo: "cerrado",
+    franjas: []   
+  });
+ 
 
   const agregarFranja = (diaIdx) => {
     const nuevos = [...horarios];
@@ -49,7 +54,7 @@ export default function AdminConfig() {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold">Configuración para rol: {rolId}</h2>
+      <h2 className="text-xl font-bold">Configuración </h2>
       {error && <p className="text-red-500">{error}</p>}
 
       {/* Turnos simultáneos */}
@@ -83,8 +88,15 @@ export default function AdminConfig() {
         nuevaExcepcion={nuevaExcepcion}
         setNuevaExcepcion={setNuevaExcepcion}
         onAdd={() => {
+          if (
+            nuevaExcepcion.tipo === "abierto" &&
+            (!nuevaExcepcion.franjas || nuevaExcepcion.franjas.length === 0)
+          ) {
+            alert("Agregá al menos una franja");
+            return;
+          }
           addExcepcion(nuevaExcepcion).then(() =>
-            setNuevaExcepcion({ fecha: "", tipo: "cerrado", inicio: "", fin: "" })
+            setNuevaExcepcion({ fecha: "", tipo: "cerrado", franjas: [] })
           );
         }}
       />

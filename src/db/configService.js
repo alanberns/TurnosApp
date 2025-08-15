@@ -12,6 +12,7 @@ export function listenConfig(rolId, defaultHorarios, onData, onError) {
         const data = snap.data();
         onData({
           turnosSimultaneos: Number(data.turnosSimultaneos ?? 1),
+          minutosSlot: Number(data.minutosSlot ?? 15),
           horarios: data.horarios ? deserializeHorarios(data.horarios) : defaultHorarios
         });
       } else {
@@ -21,6 +22,19 @@ export function listenConfig(rolId, defaultHorarios, onData, onError) {
     err => onError(err)
   );
 }
+
+export function saveConfig(rolId, turnosSimultaneos, minutosSlot, horarios) {
+  return setDoc(
+    doc(db, "configuracion", rolId),
+    {
+      turnosSimultaneos: Number(turnosSimultaneos),
+      minutosSlot: Number(minutosSlot),
+      horarios: serializeHorarios(horarios)
+    },
+    { merge: true }
+  );
+}
+
 
 export function listenExcepciones(rolId, onData, onError) {
   // fecha de hoy en formato YYYY-MM-DD
@@ -39,14 +53,6 @@ export function listenExcepciones(rolId, onData, onError) {
       onData(lista);
     },
     err => onError(err)
-  );
-}
-
-export function saveConfig(rolId, turnosSimultaneos, horarios) {
-  return setDoc(
-    doc(db, "configuracion", rolId),
-    { turnosSimultaneos: Number(turnosSimultaneos), horarios: serializeHorarios(horarios) },
-    { merge: true }
   );
 }
 

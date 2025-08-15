@@ -14,7 +14,7 @@ export function useAdminConfig(rolId, isAuthReady) {
   );
 
   const [turnosSimultaneos, setTurnosSimultaneos] = useState(1);
-  const [minutosSlot, setMinutosSlot] = useState(15); // ⬅ nuevo estado
+  const [minutosSlot, setMinutosSlot] = useState(15); 
   const [horarios, setHorarios] = useState(defaultHorarios);
   const [excepciones, setExcepciones] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +64,7 @@ export function useAdminConfig(rolId, isAuthReady) {
     error,
     defaultHorarios,
     saveConfig: () =>
-      saveConfig(rolId, turnosSimultaneos, minutosSlot, horarios), // ⬅ pasamos minutosSlot
+      saveConfig(rolId, turnosSimultaneos, minutosSlot, horarios),
     addExcepcion: exc => addExcepcion(rolId, exc),
     removeExcepcion: id => removeExcepcion(rolId, id)
   };
