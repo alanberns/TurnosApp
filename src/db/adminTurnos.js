@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, documentId, doc, updateDoc  } from "firebase/firestore";
+import { collection, query, where, getDocs, getDoc, documentId, doc, updateDoc, writeBatch, increment  } from "firebase/firestore";
 import dayjs from "dayjs";
 import { db } from "../firebase";
 
@@ -14,11 +14,13 @@ export async function aceptarTurno(turnoId) {
 }
 
 export async function rechazarTurno(turnoId) {
-    return cambiarEstadoATurno(turnoId, "rechazado");
+  liberarSlots(turnoId);
+  return cambiarEstadoATurno(turnoId, "rechazado");
 }
 
 export async function cancelarTurno(turnoId) {
-    return cambiarEstadoATurno(turnoId, "cancelado");
+  liberarSlots(turnoId);
+  return cambiarEstadoATurno(turnoId, "cancelado");
 }
   
 
@@ -128,4 +130,27 @@ export async function getTurnosPorFechaOptimizado(fecha) {
   }));
 
   return turnosEnriquecidos;
+}
+
+export async function liberarSlots(turnoId) {
+  const turnoRef = doc(db, "turnos", turnoId);
+  const turnoSnap = await getDoc(turnoRef);
+
+  if (!turnoSnap.exists()) return;
+
+  const { slotIds = [] } = turnoSnap.data();
+
+  const batch = writeBatch(db);
+
+  // Sumar capacidad de todos los slots
+  for (const slotId of slotIds) {
+    const slotRef = doc(db, "slots", slotId);
+    batch.update(slotRef, { capacidad: increment(1) });
+  }
+
+  // Vaciar el array de slotIds en el turno
+  batch.update(turnoRef, { slotIds: [] });
+
+  // Enviar todo junto
+  await batch.commit();
 }
