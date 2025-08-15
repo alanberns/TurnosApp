@@ -10,6 +10,7 @@ export const useAuthStore = create(
       isAuthReady: false,
       setUser: ({ user, info, turnos }) =>
         set({ user, info, turnos, isAuthReady: true }),      
+      setTurnos: (turnosActualizados) => set({ turnos: turnosActualizados }),
       clearUser: () => set({ user: null, info: null, turnos: null, isAuthReady: false }),
     }),
     {
