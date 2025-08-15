@@ -28,6 +28,7 @@ export function ExcepcionesForm({ nuevaExcepcion, setNuevaExcepcion, onAdd }) {
         <input
           type="date"
           value={nuevaExcepcion.fecha}
+          min={new Date().toISOString().split('T')[0]}
           onChange={(e) =>
             setNuevaExcepcion({ ...nuevaExcepcion, fecha: e.target.value })
           }
