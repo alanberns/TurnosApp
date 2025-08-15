@@ -20,6 +20,18 @@ export default function ListaTurnosPendientes() {
         cargarPendientes();
     }, []);
 
+    const aceptar = async (id) => {
+        await aceptarTurno(id);
+        setTurnosPendientes(prev => prev.filter(tp => tp.id !== id));
+        onEstadoCambiado?.(id, "confirmado");
+      };
+      
+      const rechazar = async (id) => {
+        await rechazarTurno(id);
+        setTurnosPendientes(prev => prev.filter(tp => tp.id !== id));
+        onEstadoCambiado?.(id, "rechazado");
+      };
+
     if (cargando) {
         return <p className="text-gray-500">Cargando turnos pendientes...</p>;
     }
@@ -56,19 +68,13 @@ export default function ListaTurnosPendientes() {
 
                         <div className="flex gap-2 mt-3">
                             <button
-                                onClick={async () => {
-                                    await aceptarTurno(t.id);
-                                    setTurnosPendientes(prev => prev.filter(tp => tp.id !== t.id));
-                                }}
+                                onClick={async () => {aceptar}}
                                 className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
                             >
                                 Aceptar
                             </button>
                             <button
-                                onClick={async () => {
-                                    await rechazarTurno(t.id);
-                                    setTurnosPendientes(prev => prev.filter(tp => tp.id !== t.id));
-                                }}
+                                onClick={async () => {rechazar}}
                                 className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                             >
                                 Rechazar
