@@ -5,6 +5,7 @@ import {
   updateServicio,
   deleteServicio
 } from "../../db/service/dbServicios";
+import InfoMessage from "../../components/InfoMessage";
 
 export default function AdminServicios() {
   const [servicios, setServicios] = useState([]);
@@ -15,6 +16,8 @@ export default function AdminServicios() {
     activo: true
   });
   const [editId, setEditId] = useState(null);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   useEffect(() => {
     cargarServicios();
@@ -39,8 +42,10 @@ export default function AdminServicios() {
     if (editId) {
       await updateServicio(editId, form);
       setEditId(null);
+      setSuccess("Servicio editado");
     } else {
       await addServicio(form);
+      setSuccess("Servicio añadido");
     }
 
     setForm({ nombre: "", duracionMinutos: 30, precio: 0, activo: true });
@@ -56,11 +61,14 @@ export default function AdminServicios() {
     if (!window.confirm("¿Eliminar este servicio?")) return;
     await deleteServicio(id);
     setServicios(servicios.filter(s => s.id !== id));
+    setSuccess("Servicio eliminado");
   };
 
   return (
     <div>
       <h2>Administración de Servicios</h2>
+      {error && <InfoMessage type="error" message={error} />}
+      {success && <InfoMessage type="success" message={success} />}
 
       <form onSubmit={guardarServicio} style={{ marginBottom: '20px' }}>
         <input

@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import Layout from "./components/layout/Layout";
 import AdminServicios from "./pages/admin/AdminServicios";
+import Perfil from "./pages/Perfil";
 
 
 export default function App() {
@@ -22,6 +23,13 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/perfil"
+              element={
+                <ProtectedRoutes allowedRoles={["user", "admin"]}>
+                  <Perfil />
+                </ProtectedRoutes>
+              }
+            />
             <Route path="/dashboard"
               element={
                 <ProtectedRoutes allowedRoles={["user", "admin"]}>
