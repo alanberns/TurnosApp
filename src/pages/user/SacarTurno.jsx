@@ -6,8 +6,6 @@ import Paso2FechaHorario from "../../components/sacarTurno/Paso2FechaHorario";
 import Paso3Confirmacion from "../../components/sacarTurno/Paso3Confirmacion";
 import { useAuthStore } from "../../store/useAuthStore";
 
-const TAMANO_SLOT_MIN = 15;
-
 export default function SacarTurno() {
   const [servicios, setServicios] = useState([]);
   const [loadingServicios, setLoadingServicios] = useState(true);

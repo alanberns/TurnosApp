@@ -40,10 +40,21 @@ export async function obtenerConfigYSlots(fecha) {
 
   if (!exSnap.empty) {
     const excepcion = exSnap.docs[0].data();
+
     if (excepcion.tipo === "cerrado") {
+      // Día cerrado → sin atención
       horarioAtencion = [];
     } else if (excepcion.tipo === "abierto") {
-      horarioAtencion = [{ inicio: excepcion.inicio, fin: excepcion.fin }];
+      // Día abierto especial con múltiples franjas
+      if (Array.isArray(excepcion.franjas)) {
+        horarioAtencion = excepcion.franjas.map(f => ({
+          inicio: f.inicio,
+          fin: f.fin
+        }));
+      } else {
+        // Compatibilidad con posibles datos viejos
+        horarioAtencion = [{ inicio: excepcion.inicio, fin: excepcion.fin }];
+      }
     }
   }
 
