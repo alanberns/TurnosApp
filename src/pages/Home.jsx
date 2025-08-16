@@ -1,23 +1,29 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { fetchServicios } from "../db/service/fetchServicios";
+import { useServiciosStore } from "../store/useServiciosStore";
 
 export default function Home() {
   const user = useAuthStore((state) => state.user);
+  const fetchServicios = useServiciosStore((state) => state.fetchServicios);
   const [servicios, setServicios] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const cargarServicios = async () => {
-      setLoading(true);
-      const data = await fetchServicios(); // devuelve array (aunque sea 0 o 1)
-      setServicios(data);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const data = await fetchServicios();
+        setServicios(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
-    cargarServicios();
-  }, []);
 
+    cargarServicios();
+  }, [fetchServicios]);
 
   return (
     <>

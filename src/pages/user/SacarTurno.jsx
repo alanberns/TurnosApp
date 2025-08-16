@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchServicios } from "../../db/service/fetchServicios";
+import { useServiciosStore } from "../../store/useServiciosStore";
 import { obtenerConfigYSlots, generarSlotsOfrecibles, reservarTurnoYSlots } from "../../db/dbTurnos";
 import Paso1Servicio from "../../components/sacarTurno/Paso1Servicio";
 import Paso2FechaHorario from "../../components/sacarTurno/Paso2FechaHorario";
@@ -8,6 +8,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 
 export default function SacarTurno() {
   const [servicios, setServicios] = useState([]);
+  const fetchServicios = useServiciosStore((state) => state.fetchServicios);
   const [loadingServicios, setLoadingServicios] = useState(true);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
